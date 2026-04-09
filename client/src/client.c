@@ -19,6 +19,9 @@ int main(void)
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
 
+	logger = log_create("tp0.log","log", true, LOG_LEVEL_INFO);
+	log_info(logger, "Soy un Log");
+	
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
@@ -29,14 +32,25 @@ int main(void)
 
 	// Loggeamos el valor de config
 
+	config = config_create("./cliente.config");
+	char* key_value = config_get_string_value(config, "CLAVE");
+
+	log_info(logger, key_value);
+
+
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
 
+	log_destroy(logger);
+	config_destroy(config);
+
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
+	
+	
 
 	// Creamos una conexión hacia el servidor
 	conexion = crear_conexion(ip, puerto);
@@ -50,6 +64,7 @@ int main(void)
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
+	
 }
 
 t_log* iniciar_logger(void)
@@ -71,13 +86,23 @@ void leer_consola(t_log* logger)
 	char* leido;
 
 	// La primera te la dejo de yapa
-	leido = readline("> ");
+	//leido = readline("> ");
+	//log_info(logger, leido);
+	//free(leido);
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
-
-
+	while(1){	
+		leido = readline("> ");
+		
+		if(strcmp(leido, "") == 0){
+			break;
+		}
+		
+		log_info(logger, leido);
+		free(leido);
+	}
 	// ¡No te olvides de liberar las lineas antes de regresar!
-
+	
 }
 
 void paquete(int conexion)
